@@ -1,0 +1,42 @@
+<ion-app>
+  <ion-menu type="reveal" side="start" contentId="main-content">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title> ProjectFF </ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list>
+        <ion-menu-toggle>
+          <ion-item lines="none" routerLink="/wardrobe">
+            <ion-icon name="shirt-outline" slot="start"></ion-icon>
+            <ion-label>Virtual Wardrobe</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle>
+          <ion-item lines="none" routerLink="/settings">
+            <ion-icon name="settings-outline" slot="start"></ion-icon>
+            <ion-label>Settings</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle>
+          <ion-item lines="none" (click)="onLogout()">
+            <ion-icon name="exit" slot="start"></ion-icon>
+            <ion-label>Logout</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+        <!-- <ion-item lines="none">
+          <ion-toggle
+            [checked]="darkMode"
+            justify="space-between"
+            (ionChange)="toggleTheme($event)"
+            color="primary"
+          >
+            Toggle Dark Mode
+          </ion-toggle>
+        </ion-item> -->
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+  <ion-router-outlet class="ion-page" id="main-content"></ion-router-outlet>
+</ion-app>

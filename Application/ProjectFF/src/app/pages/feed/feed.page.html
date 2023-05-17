@@ -1,0 +1,152 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>The Fashion Corner</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-refresher
+    slot="fixed"
+    [pullMin]="80"
+    (ionRefresh)="handleRefresh($event)"
+  >
+    <ion-refresher-content
+      pullingIcon="chevron-down-circle-outline"
+      pullingText="Pull to refresh"
+      refreshingSpinner="circles"
+    >
+    </ion-refresher-content>
+  </ion-refresher>
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="medium">The Fashion Corner</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-row>
+    <ion-col size="12" size-sm="8" offset-sm="2">
+      <ion-segment
+        value="all"
+        (ionChange)="onFilterUpdate($event)"
+        color="primary"
+        [disabled]="!articles || articles.length <= 0"
+      >
+        <ion-segment-button value="all"> All </ion-segment-button>
+        <ion-segment-button value="favorites"> Favorites </ion-segment-button>
+      </ion-segment>
+    </ion-col>
+  </ion-row>
+  <ion-grid *ngIf="!articles || articles.length <= 0">
+    <ion-row *ngFor="let loop of [1,2,3,4]">
+      <ion-col size-sm="6" offset-sm="3">
+        <!-- <ion-skeleton-text [animated]="true"></ion-skeleton-text> -->
+        <ion-card>
+          <ion-skeleton-text
+            [animated]="true"
+            style="height: 230px"
+          ></ion-skeleton-text>
+          <ion-card-header>
+            <ion-card-title>
+              <ion-skeleton-text
+                [animated]="true"
+                style="height: 28px"
+              ></ion-skeleton-text>
+              <ion-skeleton-text
+                [animated]="true"
+                style="height: 28px"
+              ></ion-skeleton-text>
+              <ion-skeleton-text
+                [animated]="true"
+                style="height: 28px"
+              ></ion-skeleton-text>
+            </ion-card-title>
+            <ion-card-subtitle>
+              <ion-skeleton-text
+                [animated]="true"
+                style="width: 75%"
+              ></ion-skeleton-text>
+            </ion-card-subtitle>
+          </ion-card-header>
+
+          <ion-card-content>
+            <ion-skeleton-text
+              [animated]="true"
+              style="height: 19px"
+            ></ion-skeleton-text>
+          </ion-card-content>
+          <div class="ion-text-center">
+            <ion-button fill="clear" color="medium"> More </ion-button>
+          </div>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid *ngIf="articles && articles.length">
+    <ng-container *ngIf="displayAll">
+      <ion-row *ngFor="let article of articles">
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-card>
+            <ion-img [src]="article?.imageUrl"></ion-img>
+            <ion-card-header>
+              <ion-card-title> {{article?.title}} </ion-card-title>
+              <ion-card-subtitle>
+                By {{article?.author}} posted {{article.date.toJSON().slice(0,
+                10)}}
+              </ion-card-subtitle>
+            </ion-card-header>
+
+            <ion-card-content
+              *ngIf="article.paragraphs[0]?.text && article.paragraphs[0]?.text !== ''"
+            >
+              <p>{{article.paragraphs[0].text?.substring(0, 100)}}...</p>
+            </ion-card-content>
+            <div class="ion-text-center">
+              <ion-button
+                fill="clear"
+                color="primary"
+                [routerLink]="['/','home','tabs','feed',article.id]"
+              >
+                More
+              </ion-button>
+            </div>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ng-container>
+
+    <ng-container *ngIf="!displayAll">
+      <ion-row *ngFor="let article of favoriteArticles">
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-card>
+            <ion-img [src]="article?.imageUrl"></ion-img>
+            <ion-card-header>
+              <ion-card-title> {{article?.title}} </ion-card-title>
+              <ion-card-subtitle>
+                By {{article?.author}} posted {{article.date.toJSON().slice(0,
+                10)}}
+              </ion-card-subtitle>
+            </ion-card-header>
+
+            <ion-card-content
+              *ngIf="article.paragraphs[0]?.text && article.paragraphs[0]?.text !== ''"
+            >
+              <p>{{article.paragraphs[0].text?.substring(0, 100)}}...</p>
+            </ion-card-content>
+            <div class="ion-text-center">
+              <ion-button
+                fill="clear"
+                color="primary"
+                [routerLink]="['/','home','tabs','feed',article.id]"
+              >
+                More
+              </ion-button>
+            </div>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ng-container>
+  </ion-grid>
+</ion-content>
