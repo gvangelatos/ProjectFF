@@ -17,6 +17,7 @@ export class ClothingItem {
       | AccessoriesSubType
       | FootwearSubType,
     public imageUrl: string,
-    public id: string
+    public id: string,
+    public color: string
   ) {}
 }

@@ -4,7 +4,10 @@ import { Setting } from '../clothing-types/clothing-types.model';
 export class Outfit {
   constructor(
     public items: ClothingItem[],
-    public name: String,
-    public setting: Setting
+    public name: string,
+    public setting: Setting,
+    public id: string,
+    public createdAt: Date,
+    public isFavorite: boolean
   ) {}
 }

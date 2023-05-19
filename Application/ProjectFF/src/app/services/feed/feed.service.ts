@@ -630,7 +630,7 @@ export class FeedService {
   getArticle(id: string) {
     return this.articles.pipe(
       take(1),
-      delay(1000),
+      delay(500),
       map((articles) => {
         return <Article>{
           ...articles.find((ar) => {
@@ -644,7 +644,7 @@ export class FeedService {
   toggleArticleFavorites(articleId: string) {
     return this.articles.pipe(
       take(1),
-      delay(800),
+      delay(500),
       tap((articles) => {
         const updatedarticleIndex = articles.findIndex(
           (article) => article.id === articleId
@@ -673,7 +673,7 @@ export class FeedService {
   getFavorites() {
     return this.articles.pipe(
       take(1),
-      delay(800),
+      delay(500),
       map((articles) => {
         return {
           ...articles.map((ar) => {

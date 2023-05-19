@@ -1,6 +1,9 @@
 :host {
-  ion-title {
-    font-family: Lobster;
-    font-size: 24px;
+  ion-button[slot="fixed"] {
+    top: 70%;
+    right: 20px;
+  }
+  ion-thumbnail {
+    --border-radius: 6px;
   }
 }

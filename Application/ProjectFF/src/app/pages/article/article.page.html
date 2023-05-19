@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home/tabs/feed"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{article?.title}}</ion-title>
+    <ion-title *ngIf="mode === 'ios'">{{article?.title}}</ion-title>
     <ion-buttons slot="primary">
       <ion-button (click)="askForFavorites()">
         <ion-icon [name]="iconFavorite" slot="icon-only"></ion-icon>
@@ -18,19 +18,21 @@
         >{{article?.title}} <br />
         <span class="subtitle" *ngIf="article?.author">
           By {{article?.author}} {{article?.date?.toJSON()?.slice(0,
-          10)?.split('-')?.join('/')}}</span
-        ></ion-title
-      >
+          10)?.split('-')?.join('/')}}
+        </span>
+      </ion-title>
     </ion-toolbar>
   </ion-header>
-  <!-- public imageTitle?: string,
-  public text?: string,
-  public hasImage?: boolean,
-  public imageUrl?: string,
-  public paragraphTitle?: string,
-  public hasList?: boolean,
-  public listTitle?: string,
-  public listItems?: List[] -->
+  <ion-title
+    *ngIf="mode !== 'ios'"
+    size="small"
+    class="title-md ion-text-center"
+    >{{article?.title}} <br />
+    <span class="subtitle" *ngIf="article?.author">
+      By {{article?.author}} {{article?.date?.toJSON()?.slice(0,
+      10)?.split('-')?.join('/')}}</span
+    ></ion-title
+  >
   <ion-grid class="article-info">
     <ion-row>
       <ion-col size-sm="6" offset-sm="3" class="">

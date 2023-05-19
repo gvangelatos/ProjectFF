@@ -18,20 +18,86 @@
       <ion-title size="small">My Virtual Wardrobe</ion-title>
     </ion-toolbar>
   </ion-header>
-
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button id="open-modal" size="small">
+      <ion-icon expand="block" name="filter-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
   <ion-grid>
     <ion-row>
-      <ion-col
-        size-md="6"
-        offset-md="3"
-        *ngIf="!clothingItems || !clothingItems.length"
-      >
-        <p class="ion-text-center">No Clothing Items Found!</p>
+      <ion-col size="12" size-sm="8" offset-sm="2">
+        <ion-segment
+          value="wardrobe"
+          (ionChange)="onFilterUpdate($event)"
+          color="primary"
+          [disabled]="loadingWardrobe || loadingOutfits || loadingFilteredWardrobe"
+        >
+          <ion-segment-button value="wardrobe">All Items</ion-segment-button>
+          <ion-segment-button value="outfit">My Outfits </ion-segment-button>
+        </ion-segment>
       </ion-col>
+    </ion-row>
+
+    <!-- CLOTHES -->
+    <ion-row>
+      <!-- EMPTY CLOTHES -->
       <ion-col
         size-md="6"
         offset-md="3"
-        *ngIf="clothingItems && clothingItems.length"
+        class="ion-text-center"
+        *ngIf="(!clothingItems || !clothingItems.length) && loadingWardrobe === false && displayingFilter === 'all'"
+      >
+        <h2>
+          Looks like you have no items in your wardrobe. Let's change that!
+        </h2>
+        <ion-button class="ion-padding" shape="round">Add Clothes!</ion-button>
+      </ion-col>
+      <!-- SKELETONS -->
+      <ion-col
+        size-md="6"
+        offset-md="3"
+        *ngIf="(!clothingItems || !clothingItems.length) && loadingWardrobe === true && displayingFilter === 'all'"
+      >
+        <ion-list>
+          <ion-item-sliding *ngFor="let item of [1,2]" #slidingClothingItem>
+            <ion-item>
+              <ion-thumbnail slot="start">
+                <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+              </ion-thumbnail>
+              <ion-label>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="height: 20px; width: 40%"
+                ></ion-skeleton-text>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="height: 20px; width: 70%"
+                ></ion-skeleton-text>
+              </ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-thumbnail slot="start">
+                <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+              </ion-thumbnail>
+              <ion-label>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="height: 20px; width: 48%"
+                ></ion-skeleton-text>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="height: 20px; width: 65%"
+                ></ion-skeleton-text>
+              </ion-label>
+            </ion-item>
+          </ion-item-sliding>
+        </ion-list>
+      </ion-col>
+      <!-- ITEMS -->
+      <ion-col
+        size-md="6"
+        offset-md="3"
+        *ngIf="clothingItems && clothingItems.length && filter === 'wardrobe' && displayingFilter === 'all'"
       >
         <ion-list>
           <ion-item-sliding
@@ -44,7 +110,14 @@
               </ion-thumbnail>
               <ion-label>
                 <h5>{{item.setting}} {{item.subType}}</h5>
-                <p>Type: {{ item.type}}</p>
+                <p>
+                  <ng-container *ngIf="item.color">
+                    <b>Type:</b> {{ item.type}},
+                  </ng-container>
+                  <ng-container *ngIf="item.color">
+                    <b>Color:</b> {{item.color}}</ng-container
+                  >
+                </p>
               </ion-label>
             </ion-item>
             <ion-item-options
@@ -52,15 +125,11 @@
               (ionSwipe)="onEditClothingItemSlide($event,item.id,slidingClothingItem)"
             >
               <ion-item-option
-                color="success"
+                color="secondary"
                 expandable
                 (click)="onEditClothingItem(item.id,slidingClothingItem)"
               >
-                <ion-icon
-                  color="light"
-                  name="build-outline"
-                  slot="icon-only"
-                ></ion-icon>
+                <ion-icon name="build-outline" slot="icon-only"></ion-icon>
               </ion-item-option>
             </ion-item-options>
             <ion-item-options
@@ -85,5 +154,324 @@
         </ion-list>
       </ion-col>
     </ion-row>
+
+    <!-- OUTFITS -->
+    <ion-row>
+      <!-- EMPTY OUTFITS -->
+      <ion-col
+        size-md="6"
+        offset-md="3"
+        class="ion-text-center"
+        *ngIf="(!outfits || !outfits.length) && filter === 'outfit' && loadingOutfits === false && displayingFilter === 'all'"
+      >
+        <h2>
+          Looks like you have no outfits in your wardrobe. Let's change that!
+        </h2>
+        <ion-button class="ion-padding" shape="round">
+          Create Outfit!
+        </ion-button>
+      </ion-col>
+      <!-- SKELETONS -->
+      <ion-col
+        size-md="6"
+        offset-md="3"
+        *ngIf="(!outfits || !outfits.length) && filter === 'outfit' && loadingOutfits === true && displayingFilter === 'all'"
+      >
+        <ion-list>
+          <ion-item-sliding *ngFor="let item of [1,2]" #slidingClothingItem>
+            <ion-item>
+              <ion-thumbnail slot="start">
+                <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+              </ion-thumbnail>
+              <ion-label>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="height: 20px; width: 40%"
+                ></ion-skeleton-text>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="height: 20px; width: 70%"
+                ></ion-skeleton-text>
+              </ion-label>
+            </ion-item>
+            <ion-item>
+              <ion-thumbnail slot="start">
+                <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+              </ion-thumbnail>
+              <ion-label>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="height: 20px; width: 48%"
+                ></ion-skeleton-text>
+                <ion-skeleton-text
+                  [animated]="true"
+                  style="height: 20px; width: 65%"
+                ></ion-skeleton-text>
+              </ion-label>
+            </ion-item>
+          </ion-item-sliding>
+        </ion-list>
+      </ion-col>
+      <!-- ITEMS -->
+      <ion-col
+        size-md="6"
+        offset-md="3"
+        *ngIf="outfits && outfits.length && filter === 'outfit' && displayingFilter === 'all'"
+      >
+        <ion-list>
+          <ion-item-sliding *ngFor="let outfit of outfits" #slidingOutfitItem>
+            <ion-item>
+              <ion-thumbnail slot="start">
+                <img [src]="outfit.items[0].imageUrl" />
+              </ion-thumbnail>
+              <ion-badge slot="end">{{outfit.items.length}} Items</ion-badge>
+              <ion-label>
+                <h5>{{outfit.name}}</h5>
+                <p>
+                  <ng-container *ngIf="outfit.setting">
+                    <b>Occasion:</b> {{ outfit.setting}}
+                  </ng-container>
+                  <!-- <ng-container *ngIf="outfit.color">
+                    <b>Color:</b> {{outfit.color}}</ng-container
+                  > -->
+                </p>
+              </ion-label>
+            </ion-item>
+            <ion-item-options
+              side="start"
+              (ionSwipe)="onEditOutfitSlide($event,outfit.id,slidingOutfitItem)"
+            >
+              <ion-item-option
+                color="secondary"
+                expandable
+                (click)="onEditOutfit(outfit.id,slidingOutfitItem)"
+              >
+                <ion-icon name="build-outline" slot="icon-only"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+            <ion-item-options
+              side="end"
+              (ionSwipe)="ondeleteOutfitSlide($event,outfit.id,slidingOutfitItem)"
+            >
+              <ion-item-option
+                color="primary"
+                (click)="onOutfitToggleFavorites(outfit.id,slidingOutfitItem)"
+              >
+                <ion-icon name="heart-outline" slot="icon-only"></ion-icon>
+              </ion-item-option>
+              <ion-item-option
+                color="danger"
+                expandable
+                (click)="ondeleteOutfit(outfit.id,slidingOutfitItem)"
+              >
+                <ion-icon name="trash" slot="icon-only"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ion-list>
+      </ion-col>
+    </ion-row>
   </ion-grid>
+
+  <!-- FILTERED CLOTHES -->
+  <ion-row>
+    <!-- EMPTY CLOTHES -->
+    <ion-col
+      size-md="6"
+      offset-md="3"
+      class="ion-text-center"
+      *ngIf="(!filteredClothingItems || !filteredClothingItems.length) && loadingFilteredWardrobe === false && displayingFilter !== 'all' && filter === 'wardrobe'"
+    >
+      <h2>Looks like you have no items in your wardrobe. Let's change that!</h2>
+      <ion-button class="ion-padding" shape="round">Add Clothes!</ion-button>
+    </ion-col>
+    <!-- SKELETONS -->
+    <ion-col
+      size-md="6"
+      offset-md="3"
+      *ngIf="(!filteredClothingItems || !filteredClothingItems.length) && loadingFilteredWardrobe === true && displayingFilter !== 'all' && filter === 'wardrobe'"
+    >
+      <ion-list>
+        <ion-item-sliding *ngFor="let item of [1,2]" #slidingClothingItem>
+          <ion-item>
+            <ion-thumbnail slot="start">
+              <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+            </ion-thumbnail>
+            <ion-label>
+              <ion-skeleton-text
+                [animated]="true"
+                style="height: 20px; width: 40%"
+              ></ion-skeleton-text>
+              <ion-skeleton-text
+                [animated]="true"
+                style="height: 20px; width: 70%"
+              ></ion-skeleton-text>
+            </ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-thumbnail slot="start">
+              <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+            </ion-thumbnail>
+            <ion-label>
+              <ion-skeleton-text
+                [animated]="true"
+                style="height: 20px; width: 48%"
+              ></ion-skeleton-text>
+              <ion-skeleton-text
+                [animated]="true"
+                style="height: 20px; width: 65%"
+              ></ion-skeleton-text>
+            </ion-label>
+          </ion-item>
+        </ion-item-sliding>
+      </ion-list>
+    </ion-col>
+    <!-- ITEMS -->
+    <ion-col
+      size-md="6"
+      offset-md="3"
+      *ngIf="filteredClothingItems && filteredClothingItems.length && filter === 'wardrobe' && displayingFilter !== 'all'"
+    >
+      <ion-accordion-group>
+        <ion-accordion
+          *ngFor="let group of filteredClothingItems"
+          [value]="group.groupName"
+        >
+          <ion-item
+            slot="header"
+            color="light"
+            toggleIcon="chevron-down-outline"
+            toggleIconSlot="end"
+          >
+            <ion-label>{{group.groupName | titlecase}}</ion-label>
+          </ion-item>
+          <div class="ion-padding-vertical" slot="content">
+            <ion-list>
+              <ion-item-sliding
+                *ngFor="let item of group.groupItems"
+                #slidingClothingItem
+              >
+                <ion-item>
+                  <ion-thumbnail slot="start">
+                    <img [src]="item.imageUrl" />
+                  </ion-thumbnail>
+                  <ion-label>
+                    <h5>{{item.setting}} {{item.subType}}</h5>
+                    <p>
+                      <ng-container *ngIf="item.color">
+                        <b>Type:</b> {{ item.type}},
+                      </ng-container>
+                      <ng-container *ngIf="item.color">
+                        <b>Color:</b> {{item.color | titlecase}}</ng-container
+                      >
+                    </p>
+                  </ion-label>
+                </ion-item>
+                <ion-item-options
+                  side="start"
+                  (ionSwipe)="onEditClothingItemSlide($event,item.id,slidingClothingItem)"
+                >
+                  <ion-item-option
+                    color="secondary"
+                    expandable
+                    (click)="onEditClothingItem(item.id,slidingClothingItem)"
+                  >
+                    <ion-icon name="build-outline" slot="icon-only"></ion-icon>
+                  </ion-item-option>
+                </ion-item-options>
+                <ion-item-options
+                  side="end"
+                  (ionSwipe)="ondeleteClothingItemSlide($event,item.id,slidingClothingItem)"
+                >
+                  <ion-item-option
+                    color="primary"
+                    (click)="onAddToOutfit(item.id,slidingClothingItem)"
+                  >
+                    <ion-icon
+                      name="duplicate-outline"
+                      slot="icon-only"
+                    ></ion-icon>
+                  </ion-item-option>
+                  <ion-item-option
+                    color="danger"
+                    expandable
+                    (click)="ondeleteClothingItem(item.id,slidingClothingItem)"
+                  >
+                    <ion-icon name="trash" slot="icon-only"></ion-icon>
+                  </ion-item-option>
+                </ion-item-options>
+              </ion-item-sliding>
+            </ion-list>
+          </div>
+        </ion-accordion>
+      </ion-accordion-group>
+    </ion-col>
+  </ion-row>
+  <!-- FILTERS MODAL -->
+  <ion-modal
+    #modal
+    trigger="open-modal"
+    [initialBreakpoint]="0.5"
+    [breakpoints]="[0, 0.25, 0.5, 0.75]"
+  >
+    <ng-template>
+      <ion-content>
+        <ion-list class="ion-padding-top">
+          <ion-item class="ion-text-center">
+            <ion-title class="ion-no-padding">Filter:</ion-title>
+          </ion-item>
+          <ion-item>
+            <ion-toggle
+              [disabled]="loadingOutfits || loadingWardrobe || loadingFilteredWardrobe || (!clothingItems.length && filter === 'wardrobe') || (!outfits.length && filter === 'outfit')"
+              [checked]="displayingFilter === 'all'"
+              (ionChange)="onFilterChange('all')"
+              justify="space-between"
+            >
+              Show All
+            </ion-toggle>
+          </ion-item>
+          <ion-item *ngIf="filter === 'outfit'">
+            <ion-toggle
+              [disabled]="loadingOutfits || loadingWardrobe || loadingFilteredWardrobe || (!outfits.length && filter === 'outfit')"
+              [checked]="displayingFilter === 'favorites'"
+              (ionChange)="onFilterChange('favorites')"
+              justify="space-between"
+            >
+              Show Favorites
+            </ion-toggle>
+          </ion-item>
+          <ion-item>
+            <ion-toggle
+              [disabled]="loadingOutfits || loadingWardrobe || loadingFilteredWardrobe || (!clothingItems.length && filter === 'wardrobe') || (!outfits.length && filter === 'outfit')"
+              [checked]="displayingFilter === 'type'"
+              (ionChange)="onFilterChange('type')"
+              justify="space-between"
+            >
+              By Type
+            </ion-toggle>
+          </ion-item>
+          <ion-item>
+            <ion-toggle
+              [disabled]="loadingOutfits || loadingWardrobe || loadingFilteredWardrobe || (!clothingItems.length && filter === 'wardrobe') || (!outfits.length && filter === 'outfit')"
+              [checked]="displayingFilter === 'setting'"
+              (ionChange)="onFilterChange('setting')"
+              justify="space-between"
+            >
+              By Occasion
+            </ion-toggle>
+          </ion-item>
+          <ion-item *ngIf="filter === 'wardrobe'">
+            <ion-toggle
+              [disabled]="loadingOutfits || loadingWardrobe || loadingFilteredWardrobe || (!clothingItems.length && filter === 'wardrobe') "
+              [checked]="displayingFilter === 'color'"
+              (ionChange)="onFilterChange('color')"
+              justify="space-between"
+            >
+              By Color
+            </ion-toggle>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>

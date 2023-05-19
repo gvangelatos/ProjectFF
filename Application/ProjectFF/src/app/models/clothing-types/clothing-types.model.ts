@@ -3,12 +3,14 @@ export type Setting =
   | 'Casual'
   | 'Formal'
   | 'Sportswear'
-  | 'Lingerie';
+  | 'Lingerie'
+  | 'other';
 export type ClothingType =
   | 'Clothing'
   | 'Accessory'
   | 'Footwear'
-  | 'Undergarments';
+  | 'Undergarments'
+  | 'other';
 export type ClothingSubType =
   | 'T-Shirt'
   | 'Top'
@@ -22,7 +24,8 @@ export type ClothingSubType =
   | 'Jacket'
   | 'Jeans'
   | 'Miniskirt'
-  | 'Apron';
+  | 'Apron'
+  | 'other';
 export type AccessoriesSubType =
   | 'Anklet'
   | 'Belt'
@@ -50,7 +53,8 @@ export type AccessoriesSubType =
   | 'Sunglasses'
   | 'Umbrella'
   | 'Veil'
-  | 'Watch';
+  | 'Watch'
+  | 'other';
 export type FootwearSubType =
   | 'Chukka boots'
   | 'Combat boots'
@@ -110,7 +114,8 @@ export type FootwearSubType =
   | 'High-heeled footwear'
   | 'Sailing boots'
   | 'Ski boots'
-  | 'Pointe shoes';
+  | 'Pointe shoes'
+  | 'other';
 export type UndergarmentsSubType =
   | 'Bloomers'
   | 'Body tights'
@@ -128,4 +133,5 @@ export type UndergarmentsSubType =
   | 'Teddy'
   | 'Tights'
   | 'Undershirt'
-  | 'Underwear';
+  | 'Underwear'
+  | 'other';

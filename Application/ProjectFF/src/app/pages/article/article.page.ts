@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   AlertController,
+  Config,
   IonicModule,
   LoadingController,
   NavController,
@@ -24,6 +25,7 @@ export class ArticlePage implements OnInit, OnDestroy {
   article: Article | undefined;
   iconFavorite: 'heart-outline' | 'heart' = 'heart-outline';
   private _subscriptions: Subscription[] = [];
+  mode: string = 'ios';
 
   constructor(
     private router: Router,
@@ -32,10 +34,12 @@ export class ArticlePage implements OnInit, OnDestroy {
     private loadingCtrl: LoadingController,
     private feedService: FeedService,
     private alertCtrl: AlertController,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private config: Config
   ) {}
 
   ngOnInit() {
+    this.mode = this.config.get('mode');
     this.activatedRoute?.paramMap?.subscribe((paramMap) => {
       if (!paramMap?.has('articleId')) {
         this.navCtrl.navigateBack('/home/tabs/feed');
