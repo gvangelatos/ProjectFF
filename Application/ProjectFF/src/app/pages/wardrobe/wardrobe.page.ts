@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
   ActionSheetController,
+  AlertController,
   IonItemSliding,
   IonicModule,
   LoadingController,
@@ -14,6 +15,7 @@ import { WardrobeService } from 'src/app/services/wardrobe/wardrobe.service';
 import { Outfit } from 'src/app/models/outfit/outfit.model';
 import { OutfitsService } from 'src/app/services/outfits/outfits.service';
 import { FilteredClothingItem } from 'src/app/models/filtered-clothing-items/filtered-clothing-items.model';
+import { FilteredOutfitItem } from 'src/app/models/filtered-outfit-item/filtered-outfit-item.model';
 
 @Component({
   selector: 'app-wardrobe',
@@ -26,10 +28,21 @@ export class WardrobePage implements OnInit {
   clothingItems: ClothingItem[] = [];
   loadingWardrobe: boolean = true;
   loadingOutfits: boolean = true;
+  loadingFilteredOutfits: boolean = true;
   loadingFilteredWardrobe: boolean = true;
+  searchingOutfits: boolean = false;
+  searchQuery: string = '';
   outfits: Outfit[] = [];
+  outfitsFilteredSearch: Outfit[] = [];
   filteredClothingItems: FilteredClothingItem[] = [];
-  displayingFilter: 'all' | 'type' | 'setting' | 'color' | 'favorites' = 'all';
+  filteredOutfits: FilteredOutfitItem[] = [];
+  displayingFilter:
+    | 'all'
+    | 'type'
+    | 'setting'
+    | 'color'
+    | 'favorites'
+    | 'itemsNumber' = 'all';
   filter: 'wardrobe' | 'outfit' = 'wardrobe';
   private _subscriptions: Subscription[] = [];
 
@@ -38,7 +51,8 @@ export class WardrobePage implements OnInit {
     private outfitsService: OutfitsService,
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
-    private actionSheetCtrl: ActionSheetController
+    private actionSheetCtrl: ActionSheetController,
+    private alertCtrl: AlertController
   ) {}
 
   ngOnInit() {
@@ -62,20 +76,62 @@ export class WardrobePage implements OnInit {
         if (this.loadingFilteredWardrobe) this.loadingFilteredWardrobe = false;
       })
     );
+
+    this._subscriptions.push(
+      this.outfitsService.filteredOutfits.subscribe((items) => {
+        this.filteredOutfits = items;
+        if (this.loadingFilteredOutfits) this.loadingFilteredOutfits = false;
+      })
+    );
   }
 
   onFilterChange(
-    activatedFilter: 'all' | 'favorites' | 'type' | 'setting' | 'color'
+    activatedFilter:
+      | 'all'
+      | 'favorites'
+      | 'type'
+      | 'setting'
+      | 'color'
+      | 'itemsNumber'
   ) {
     // this.displayingFilter = activatedFilter;
     switch (activatedFilter) {
       case 'favorites':
         this.displayingFilter = activatedFilter;
+        this.filteredOutfits = [];
+        this.loadingFilteredOutfits = true;
+        this.outfitsService
+          .getFilteredOutfits(activatedFilter)
+          .subscribe((res) => {});
         break;
       case 'all':
         this.displayingFilter = activatedFilter;
         break;
-
+      case 'itemsNumber':
+        this.displayingFilter = activatedFilter;
+        this.filteredOutfits = [];
+        this.loadingFilteredOutfits = true;
+        this.outfitsService
+          .getFilteredOutfits(activatedFilter)
+          .subscribe((res) => {});
+        break;
+      case 'setting':
+        if (this.filter == 'outfit') {
+          this.displayingFilter = activatedFilter;
+          this.filteredOutfits = [];
+          this.loadingFilteredOutfits = true;
+          this.outfitsService
+            .getFilteredOutfits(activatedFilter)
+            .subscribe((res) => {});
+        } else if (this.filter === 'wardrobe') {
+          this.displayingFilter = activatedFilter;
+          this.filteredClothingItems = [];
+          this.loadingFilteredWardrobe = true;
+          this.wardrobeService
+            .getFilteredWardrobe(activatedFilter)
+            .subscribe((res) => {});
+        }
+        break;
       default:
         this.displayingFilter = activatedFilter;
         this.filteredClothingItems = [];
@@ -160,15 +216,95 @@ export class WardrobePage implements OnInit {
       });
   }
 
-  onOutfitToggleFavorites(outfitId: string, slidingEl: IonItemSliding) {
+  onOutfitToggleFavorites(outfit: Outfit, slidingEl: IonItemSliding) {
     slidingEl.close();
-    this.loadingCtrl
-      .create({ message: 'Adding Outfit to Favorites..' })
-      .then((loadingEl) => {
-        loadingEl.present();
-        setTimeout(() => {
-          loadingEl.dismiss();
-        }, 800);
+    this.alertCtrl
+      .create({
+        header: outfit?.isFavorite
+          ? 'Remove from Favorites?'
+          : 'Add to Favorites?',
+        subHeader: outfit?.isFavorite
+          ? 'Do you want to remove this outfit from your favorites?'
+          : 'Do you want to add this outfit to your favorites?',
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'Cancel',
+          },
+          {
+            text: outfit?.isFavorite ? 'Remove it!' : 'Add it!',
+            role: 'confirm',
+            handler: () => {
+              this.loadingCtrl
+                .create({
+                  message: outfit?.isFavorite
+                    ? 'Removing from Favorites...'
+                    : 'Adding to Favorites...',
+                })
+                .then((loadingEl) => {
+                  loadingEl.present();
+                  this.outfitsService
+                    .toggleOutfitFavorite(outfit?.id)
+                    .subscribe((res) => {
+                      if (this.displayingFilter !== 'all') {
+                        this.filteredOutfits = [];
+                        this.loadingFilteredOutfits = true;
+                        this.outfitsService
+                          .getFilteredOutfits(this.displayingFilter)
+                          .subscribe((res2) => {
+                            loadingEl.dismiss();
+                            if (res2) {
+                              this.presentToast(
+                                'bottom',
+                                outfit.isFavorite
+                                  ? 'Removed Succesfully!'
+                                  : 'Added Succesfully!',
+                                'checkmark-circle-outline',
+                                'success'
+                              );
+                            } else {
+                              loadingEl.dismiss();
+                              this.presentToast(
+                                'bottom',
+                                outfit?.isFavorite
+                                  ? 'Could not Remove to Favorites'
+                                  : 'Could not Add to Favorites',
+                                'close-circle-outline',
+                                'danger'
+                              );
+                            }
+                          });
+                      } else {
+                        loadingEl.dismiss();
+                        if (res) {
+                          this.presentToast(
+                            'bottom',
+                            outfit.isFavorite
+                              ? 'Removed Succesfully!'
+                              : 'Added Succesfully!',
+                            'checkmark-circle-outline',
+                            'success'
+                          );
+                        } else {
+                          loadingEl.dismiss();
+                          this.presentToast(
+                            'bottom',
+                            outfit?.isFavorite
+                              ? 'Could not Remove to Favorites'
+                              : 'Could not Add to Favorites',
+                            'close-circle-outline',
+                            'danger'
+                          );
+                        }
+                      }
+                    });
+                });
+            },
+          },
+        ],
+      })
+      .then((alertEl) => {
+        alertEl.present();
       });
   }
 
@@ -239,6 +375,11 @@ export class WardrobePage implements OnInit {
                   this.outfitsService
                     .deleteOutfit(outfitId)
                     .subscribe((res) => {
+                      this.filteredOutfits = [];
+                      this.loadingFilteredOutfits = true;
+                      this.outfitsService
+                        .getFilteredOutfits(this.displayingFilter)
+                        .subscribe((res) => {});
                       loadingEl.dismiss();
                       this.presentToast(
                         'bottom',
@@ -261,6 +402,17 @@ export class WardrobePage implements OnInit {
       .then((actionSheetEl) => {
         actionSheetEl.present();
       });
+  }
+
+  handleSearchInput(event: any) {
+    this.searchingOutfits = true;
+    this.searchQuery = event.target.value.toLowerCase().trim();
+    this.outfitsFilteredSearch = [
+      ...this.outfits.filter((outfit) => {
+        return outfit.name.toLowerCase().indexOf(this.searchQuery) > -1;
+      }),
+    ];
+    this.searchingOutfits = false;
   }
 
   async presentToast(
