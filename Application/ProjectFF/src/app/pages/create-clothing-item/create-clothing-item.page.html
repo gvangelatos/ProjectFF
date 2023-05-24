@@ -1,0 +1,172 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/wardrobe"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Add a new item!</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onCreateClothingItem()" [disabled]="!form.valid">
+        <ion-icon color="primary" name="checkmark" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<!-- public setting: Setting,
+public type: ClothingType,
+public subType:
+  | ClothingSubType
+  | UndergarmentsSubType
+  | AccessoriesSubType
+  | FootwearSubType,
+public imageUrl: string,
+public id: string,
+public color: string -->
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large" class="ion-text-center">
+        Add a new item!
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <form [formGroup]="form">
+    <ion-grid>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            <ion-select
+              name="clothingSetting"
+              formControlName="clothingSetting"
+              label="Item Occasion"
+              label-placement="floating"
+            >
+              <ion-select-option
+                *ngFor="let type of clothingSettings"
+                [value]="type"
+                >{{type}}</ion-select-option
+              >
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            <ion-select
+              name="clothingType"
+              formControlName="clothingType"
+              label="Item Type"
+              label-placement="floating"
+            >
+              <ion-select-option
+                *ngFor="let type of clothingTypes"
+                [value]="type"
+                >{{type}}</ion-select-option
+              >
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            <!-- <ion-input
+              type="number"
+              label="Price"
+              formControlName="price"
+              labelPlacement="floating"
+              errorText="Please enter a valid price"
+            ></ion-input> -->
+            <ion-select
+              name="clothingSubType"
+              formControlName="clothingSubType"
+              label="Item Specific Type"
+              label-placement="floating"
+            >
+              <ng-container *ngIf="form.value.clothingType === 'Clothing'">
+                <ion-select-option
+                  *ngFor="let type of clothingSubTypes"
+                  [value]="type"
+                >
+                  {{type}}
+                </ion-select-option>
+              </ng-container>
+              <ng-container *ngIf="form.value.clothingType === 'Accessory'">
+                <ion-select-option
+                  *ngFor="let type of accessoriesSubTypes"
+                  [value]="type"
+                >
+                  {{type}}
+                </ion-select-option>
+              </ng-container>
+              <ng-container *ngIf="form.value.clothingType === 'Footwear'">
+                <ion-select-option
+                  *ngFor="let type of footwearSubTypes"
+                  [value]="type"
+                >
+                  {{type}}
+                </ion-select-option>
+              </ng-container>
+              <ng-container *ngIf="form.value.clothingType === 'Undergarments'">
+                <ion-select-option
+                  *ngFor="let type of undergarmentsSubTypes"
+                  [value]="type"
+                >
+                  {{type}}
+                </ion-select-option>
+              </ng-container>
+              <ng-container *ngIf="form.value.clothingType === 'Other'">
+                <ion-select-option
+                  *ngFor="let type of otherSubTypes"
+                  [value]="type"
+                >
+                  {{type}}
+                </ion-select-option>
+              </ng-container>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            <ion-input
+              type="text"
+              name="color"
+              label="Item Color"
+              formControlName="color"
+              labelPlacement="floating"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            <ion-input
+              type="url"
+              name="imageUrl"
+              label="Image URL"
+              formControlName="imageUrl"
+              labelPlacement="floating"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item lines="none">
+            <ion-checkbox
+              name="isFavorite"
+              formControlName="isFavorite"
+              justify="space-between"
+            >
+              Add to favorites?
+            </ion-checkbox>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>

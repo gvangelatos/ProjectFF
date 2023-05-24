@@ -4,14 +4,14 @@ export const Settings = [
   'Formal',
   'Sportswear',
   'Lingerie',
-  'other',
+  'Other',
 ];
 export const ClothingTypes = [
   'Clothing',
   'Accessory',
   'Footwear',
   'Undergarments',
-  'other',
+  'Other',
 ];
 export const ClothingSubTypes = [
   'T-Shirt',
@@ -27,7 +27,7 @@ export const ClothingSubTypes = [
   'Jeans',
   'Miniskirt',
   'Apron',
-  'other',
+  'Other',
 ];
 export const AccessoriesSubTypes = [
   'Anklet',
@@ -57,7 +57,7 @@ export const AccessoriesSubTypes = [
   'Umbrella',
   'Veil',
   'Watch',
-  'other',
+  'Other',
 ];
 export const FootwearSubTypes = [
   'Chukka boots',
@@ -119,7 +119,7 @@ export const FootwearSubTypes = [
   'Sailing boots',
   'Ski boots',
   'Pointe shoes',
-  'other',
+  'Other',
 ];
 export const UndergarmentsSubTypes = [
   'Bloomers',
@@ -139,5 +139,5 @@ export const UndergarmentsSubTypes = [
   'Tights',
   'Undershirt',
   'Underwear',
-  'other',
+  'Other',
 ];

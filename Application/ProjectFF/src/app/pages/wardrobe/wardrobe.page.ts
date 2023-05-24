@@ -7,6 +7,7 @@ import {
   IonItemSliding,
   IonicModule,
   LoadingController,
+  NavController,
   ToastController,
 } from '@ionic/angular';
 import { Subscription } from 'rxjs';
@@ -52,7 +53,8 @@ export class WardrobePage implements OnInit {
     private loadingCtrl: LoadingController,
     private toastCtrl: ToastController,
     private actionSheetCtrl: ActionSheetController,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private navCtrl: NavController
   ) {}
 
   ngOnInit() {
@@ -430,6 +432,15 @@ export class WardrobePage implements OnInit {
     });
 
     await toast.present();
+  }
+
+  onAddClicked() {
+    this.displayingFilter = 'all';
+    if (this.filter === 'wardrobe') {
+      this.navCtrl.navigateForward('/wardrobe/clothing-items/new');
+    } else {
+      this.navCtrl.navigateForward('/wardrobe/outfit/new');
+    }
   }
 
   ngOnDestroy() {

@@ -80,6 +80,18 @@ export class WardrobeService {
     );
   }
 
+  addClothingItem(item: ClothingItem) {
+    return this.wardrobe.pipe(
+      take(1),
+      delay(300),
+      tap((clothingItems) => {
+        let updatedWardrobe = <ClothingItem[]>[...clothingItems];
+        updatedWardrobe.push(item);
+        this._wardrobe.next(updatedWardrobe);
+      })
+    );
+  }
+
   deleteClothingItem(itemId: string) {
     return this.wardrobe.pipe(
       take(1),
