@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -25,7 +25,7 @@ import { FilteredOutfitItem } from 'src/app/models/filtered-outfit-item/filtered
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule],
 })
-export class WardrobePage implements OnInit {
+export class WardrobePage implements OnInit, OnDestroy {
   clothingItems: ClothingItem[] = [];
   loadingWardrobe: boolean = true;
   loadingOutfits: boolean = true;
@@ -184,14 +184,10 @@ export class WardrobePage implements OnInit {
 
   onEditClothingItem(clothingItemId: string, slidingEl: IonItemSliding) {
     slidingEl.close();
-    this.loadingCtrl
-      .create({ message: 'Editing Item...' })
-      .then((loadingEl) => {
-        loadingEl.present();
-        setTimeout(() => {
-          loadingEl.dismiss();
-        }, 800);
-      });
+    this.navCtrl.navigateForward([
+      '/wardrobe/clothing-items/edit/',
+      clothingItemId,
+    ]);
   }
 
   onEditOutfit(outfitId: string, slidingEl: IonItemSliding) {

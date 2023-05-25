@@ -52,7 +52,9 @@ export const routes: Routes = [
   {
     path: 'wardrobe/clothing-items/edit/:clothingItemId',
     loadComponent: () =>
-      import('./pages/wardrobe/wardrobe.page').then((m) => m.WardrobePage),
+      import('./pages/edit-clothing-item/edit-clothing-item.page').then(
+        (m) => m.EditClothingItemPage
+      ),
     // canActivate: [AuthGuard],
   },
   {
@@ -63,15 +65,17 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'edit-clothing-item',
-    loadComponent: () => import('./pages/edit-clothing-item/edit-clothing-item.page').then( m => m.EditClothingItemPage)
-  },
-  {
     path: 'create-outfit',
-    loadComponent: () => import('./pages/create-outfit/create-outfit.page').then( m => m.CreateOutfitPage)
+    loadComponent: () =>
+      import('./pages/create-outfit/create-outfit.page').then(
+        (m) => m.CreateOutfitPage
+      ),
   },
   {
     path: 'edit-outfit',
-    loadComponent: () => import('./pages/edit-outfit/edit-outfit.page').then( m => m.EditOutfitPage)
+    loadComponent: () =>
+      import('./pages/edit-outfit/edit-outfit.page').then(
+        (m) => m.EditOutfitPage
+      ),
   },
 ];

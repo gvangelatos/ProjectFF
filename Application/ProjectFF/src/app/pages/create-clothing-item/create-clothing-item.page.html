@@ -11,16 +11,7 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<!-- public setting: Setting,
-public type: ClothingType,
-public subType:
-  | ClothingSubType
-  | UndergarmentsSubType
-  | AccessoriesSubType
-  | FootwearSubType,
-public imageUrl: string,
-public id: string,
-public color: string -->
+
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
@@ -151,19 +142,6 @@ public color: string -->
               formControlName="imageUrl"
               labelPlacement="floating"
             ></ion-input>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size-sm="6" offset-sm="3">
-          <ion-item lines="none">
-            <ion-checkbox
-              name="isFavorite"
-              formControlName="isFavorite"
-              justify="space-between"
-            >
-              Add to favorites?
-            </ion-checkbox>
           </ion-item>
         </ion-col>
       </ion-row>

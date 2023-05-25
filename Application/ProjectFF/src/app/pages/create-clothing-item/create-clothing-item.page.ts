@@ -70,10 +70,6 @@ export class CreateClothingItemPage implements OnInit {
         updateOn: 'change',
         validators: [Validators.required],
       }),
-      isFavorite: new FormControl(null, {
-        updateOn: 'change',
-        validators: [],
-      }),
     });
   }
 

@@ -168,6 +168,21 @@ export class WardrobeService {
     );
   }
 
+  updateClothingItem(clothingItem: ClothingItem) {
+    return this.wardrobe.pipe(
+      take(1),
+      delay(300),
+      tap((items) => {
+        const updatedClothingItemIndex = items.findIndex(
+          (item) => item.id === clothingItem.id
+        );
+        const updatedClothingItems = [...items];
+        updatedClothingItems[updatedClothingItemIndex] = clothingItem;
+        this._wardrobe.next(updatedClothingItems);
+      })
+    );
+  }
+
   getClothingItemsBySetting(setting: string) {
     return this.wardrobe.pipe(
       take(1),

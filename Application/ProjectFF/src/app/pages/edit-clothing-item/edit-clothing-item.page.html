@@ -1,13 +1,149 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>edit-clothing-item</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/wardrobe"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Edit your Item!</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onCreateClothingItem()" [disabled]="!form.valid">
+        <ion-icon color="primary" name="checkmark" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">edit-clothing-item</ion-title>
+      <ion-title size="large" class="ion-text-center">
+        Edit your Item!
+      </ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <form [formGroup]="form">
+    <ion-grid>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            <ion-select
+              name="clothingSetting"
+              formControlName="clothingSetting"
+              label="Item Occasion"
+              label-placement="floating"
+              [value]="clothingItem?.setting"
+            >
+              <ion-select-option
+                *ngFor="let type of clothingSettings"
+                [value]="type"
+                >{{type}}</ion-select-option
+              >
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            <ion-select
+              name="clothingType"
+              formControlName="clothingType"
+              label="Item Type"
+              label-placement="floating"
+              [value]="clothingItem?.type"
+            >
+              <ion-select-option
+                *ngFor="let type of clothingTypes"
+                [value]="type"
+                >{{type}}</ion-select-option
+              >
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            <ion-select
+              name="clothingSubType"
+              formControlName="clothingSubType"
+              label="Item Specific Type"
+              label-placement="floating"
+              [value]="clothingItem?.subType"
+            >
+              <ng-container *ngIf="form.value.clothingType === 'Clothing'">
+                <ion-select-option
+                  *ngFor="let type of clothingSubTypes"
+                  [value]="type"
+                >
+                  {{type}}
+                </ion-select-option>
+              </ng-container>
+              <ng-container *ngIf="form.value.clothingType === 'Accessory'">
+                <ion-select-option
+                  *ngFor="let type of accessoriesSubTypes"
+                  [value]="type"
+                >
+                  {{type}}
+                </ion-select-option>
+              </ng-container>
+              <ng-container *ngIf="form.value.clothingType === 'Footwear'">
+                <ion-select-option
+                  *ngFor="let type of footwearSubTypes"
+                  [value]="type"
+                >
+                  {{type}}
+                </ion-select-option>
+              </ng-container>
+              <ng-container *ngIf="form.value.clothingType === 'Undergarments'">
+                <ion-select-option
+                  *ngFor="let type of undergarmentsSubTypes"
+                  [value]="type"
+                >
+                  {{type}}
+                </ion-select-option>
+              </ng-container>
+              <ng-container *ngIf="form.value.clothingType === 'Other'">
+                <ion-select-option
+                  *ngFor="let type of otherSubTypes"
+                  [value]="type"
+                >
+                  {{type}}
+                </ion-select-option>
+              </ng-container>
+            </ion-select>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            <ion-input
+              type="text"
+              name="color"
+              label="Item Color"
+              formControlName="color"
+              labelPlacement="floating"
+              [value]="clothingItem?.color"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            <ion-input
+              type="url"
+              name="imageUrl"
+              label="Image URL"
+              formControlName="imageUrl"
+              labelPlacement="floating"
+              [clearInput]="true"
+              [value]="clothingItem?.imageUrl"
+            ></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
 </ion-content>
