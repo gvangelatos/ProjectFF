@@ -44,6 +44,7 @@ export class EditClothingItemPage implements OnInit, OnDestroy {
   clothingSettings: string[] = Settings;
   otherSubTypes: string[] = ['Other'];
   private _subscriptions: Subscription[] = [];
+  thumbnailError: boolean = true;
 
   constructor(
     private loadingCtrl: LoadingController,
@@ -111,6 +112,16 @@ export class EditClothingItemPage implements OnInit, OnDestroy {
           });
       })
     );
+  }
+
+  onThumbnailError() {
+    console.log('onThumbnailError');
+    this.thumbnailError = true;
+  }
+
+  onIonImgDidLoad(event: any) {
+    console.log('onIonImgDidLoad');
+    this.thumbnailError = false;
   }
 
   onCreateClothingItem() {

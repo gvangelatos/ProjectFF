@@ -1,0 +1,15 @@
+:host {
+  p {
+    font-size: 15px;
+    opacity: 0.7;
+    margin-top: 0px;
+  }
+  ion-item {
+    ion-button {
+      width: 70px;
+      ion-spinner {
+        height: 19px;
+      }
+    }
+  }
+}

@@ -7,6 +7,7 @@ import {
   IonItemSliding,
   IonicModule,
   LoadingController,
+  ModalController,
   NavController,
   ToastController,
 } from '@ionic/angular';
@@ -17,16 +18,18 @@ import { Outfit } from 'src/app/models/outfit/outfit.model';
 import { OutfitsService } from 'src/app/services/outfits/outfits.service';
 import { FilteredClothingItem } from 'src/app/models/filtered-clothing-items/filtered-clothing-items.model';
 import { FilteredOutfitItem } from 'src/app/models/filtered-outfit-item/filtered-outfit-item.model';
+import { TypeaheadComponent } from 'src/app/components/typeahead/typeahead.component';
 
 @Component({
   selector: 'app-wardrobe',
   templateUrl: './wardrobe.page.html',
   styleUrls: ['./wardrobe.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule],
+  imports: [IonicModule, CommonModule, FormsModule, TypeaheadComponent],
 })
 export class WardrobePage implements OnInit, OnDestroy {
   clothingItems: ClothingItem[] = [];
+  clothingItemToAdd: string = '';
   loadingWardrobe: boolean = true;
   loadingOutfits: boolean = true;
   loadingFilteredOutfits: boolean = true;
@@ -45,6 +48,8 @@ export class WardrobePage implements OnInit, OnDestroy {
     | 'favorites'
     | 'itemsNumber' = 'all';
   filter: 'wardrobe' | 'outfit' = 'wardrobe';
+  selectedOutfits: string[] = [];
+  openAddToOutfitModal: boolean = false;
   private _subscriptions: Subscription[] = [];
 
   constructor(
@@ -54,7 +59,8 @@ export class WardrobePage implements OnInit, OnDestroy {
     private toastCtrl: ToastController,
     private actionSheetCtrl: ActionSheetController,
     private alertCtrl: AlertController,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    private modalCtrl: ModalController
   ) {}
 
   ngOnInit() {
@@ -85,6 +91,25 @@ export class WardrobePage implements OnInit, OnDestroy {
         if (this.loadingFilteredOutfits) this.loadingFilteredOutfits = false;
       })
     );
+  }
+
+  onAddToOutfitSlide(
+    event: any,
+    clothingItemId: string,
+    slidingEl: IonItemSliding
+  ) {
+    this.clothingItemToAdd = clothingItemId;
+    slidingEl.close();
+    this.openAddToOutfitModal = true;
+  }
+
+  outfitSelectionCanceled() {
+    this.openAddToOutfitModal = false;
+  }
+
+  outfitSelectionChanged(outfitIds: string[]) {
+    this.openAddToOutfitModal = false;
+    console.log(outfitIds);
   }
 
   onFilterChange(
@@ -204,14 +229,8 @@ export class WardrobePage implements OnInit, OnDestroy {
 
   onAddToOutfit(clothingItemId: string, slidingEl: IonItemSliding) {
     slidingEl.close();
-    this.loadingCtrl
-      .create({ message: 'Adding to Outfit..' })
-      .then((loadingEl) => {
-        loadingEl.present();
-        setTimeout(() => {
-          loadingEl.dismiss();
-        }, 800);
-      });
+    this.clothingItemToAdd = clothingItemId;
+    this.openAddToOutfitModal = true;
   }
 
   onOutfitToggleFavorites(outfit: Outfit, slidingEl: IonItemSliding) {

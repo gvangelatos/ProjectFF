@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, delay, map, take, tap } from 'rxjs';
+import { BehaviorSubject, delay, map, switchMap, take, tap } from 'rxjs';
 import { Settings } from 'src/app/constants/constants';
 import { FilteredOutfitItem } from 'src/app/models/filtered-outfit-item/filtered-outfit-item.model';
 import { Outfit } from 'src/app/models/outfit/outfit.model';
+import { WardrobeService } from '../wardrobe/wardrobe.service';
 
 @Injectable({
   providedIn: 'root',
@@ -202,7 +203,7 @@ export class OutfitsService {
 
   private _outfitsFiltered = new BehaviorSubject<FilteredOutfitItem[]>([]);
 
-  constructor() {}
+  constructor(private wardrobeService: WardrobeService) {}
 
   get outfits() {
     return this._outfits.pipe(delay(800));
@@ -299,7 +300,7 @@ export class OutfitsService {
   toggleOutfitFavorite(itemId: string, activeFilter?: string) {
     return this.outfits.pipe(
       take(1),
-      delay(500),
+      delay(100),
       tap((outfits) => {
         const selectedOutfit = <Outfit[]>[
           ...outfits.filter((outfit) => outfit.id === itemId),
@@ -325,6 +326,57 @@ export class OutfitsService {
         if (activeFilter) {
           this.getFilteredOutfits(activeFilter);
         }
+      })
+    );
+  }
+
+  addClothingItemToOutfit(outfitId: string, clothingItemId: string) {
+    return this.outfits.pipe(
+      take(1),
+      delay(200),
+      switchMap((outfits: Outfit[]) => {
+        return this.wardrobeService.getClothingItemsById(clothingItemId).pipe(
+          tap((item) => {
+            const updatedOutfitIndex = outfits.findIndex(
+              (outfit) => outfit.id === outfitId
+            );
+            const updatedOutfitItems = [
+              ...outfits[updatedOutfitIndex].items,
+              item,
+            ];
+            const updatedOutfit = <Outfit>{
+              ...outfits[updatedOutfitIndex],
+              items: [...updatedOutfitItems],
+            };
+            let updatedOutfits = [...outfits];
+            updatedOutfits[updatedOutfitIndex] = updatedOutfit;
+            this._outfits.next(updatedOutfits);
+          })
+        );
+      })
+    );
+  }
+
+  removeClothingItemFromOutfit(outfitId: string, clothingItemId: string) {
+    return this.outfits.pipe(
+      take(1),
+      delay(100),
+      tap((outfits) => {
+        const updatedOutfitIndex = outfits.findIndex(
+          (outfit) => outfit.id === outfitId
+        );
+        const updatedOutfitItems = [
+          ...outfits[updatedOutfitIndex].items.filter(
+            (item) => item.id !== clothingItemId
+          ),
+        ];
+        const updatedOutfit = <Outfit>{
+          ...outfits[updatedOutfitIndex],
+          items: [...updatedOutfitItems],
+        };
+        let updatedOutfits = [...outfits];
+        updatedOutfits[updatedOutfitIndex] = updatedOutfit;
+        this._outfits.next(updatedOutfits);
       })
     );
   }

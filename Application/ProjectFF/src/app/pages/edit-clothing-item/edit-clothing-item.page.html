@@ -5,7 +5,10 @@
     </ion-buttons>
     <ion-title>Edit your Item!</ion-title>
     <ion-buttons slot="primary">
-      <ion-button (click)="onCreateClothingItem()" [disabled]="!form.valid">
+      <ion-button
+        (click)="onCreateClothingItem()"
+        [disabled]="!form.valid || this.form.pristine"
+      >
         <ion-icon color="primary" name="checkmark" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -141,6 +144,13 @@
               [clearInput]="true"
               [value]="clothingItem?.imageUrl"
             ></ion-input>
+            <ion-thumbnail slot="end">
+              <ion-img
+                [src]="form.value.imageUrl"
+                (ionError)="onThumbnailError()"
+                (ionImgDidLoad)="onIonImgDidLoad($event)"
+              ></ion-img>
+            </ion-thumbnail>
           </ion-item>
         </ion-col>
       </ion-row>

@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancelChanges()">Cancel</ion-button>
+    </ion-buttons>
+    <ion-title>{{ title }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="confirmChanges()">Done</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar (ionInput)="searchbarInput($event)"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="light" class="ion-padding">
+  <ion-list id="modal-list" [inset]="true">
+    <ion-item
+      *ngFor="let item of filteredItems; trackBy: trackItems; let i = index"
+    >
+      <!-- <ion-badge slot="end">{{ item.items.length }} Item(s)</ion-badge> -->
+      <ion-thumbnail slot="start">
+        <img [src]="item.items[0].imageUrl" />
+      </ion-thumbnail>
+      <ion-label>
+        <h5>{{ item.name }}</h5>
+        <p>
+          <ng-container *ngIf="item.setting">
+            <b>Occasion:</b> {{ item.setting }}
+          </ng-container>
+        </p>
+      </ion-label>
+      <ion-button
+        *ngIf="availableInOutfits[i] !== 2"
+        slot="end"
+        fill="outline"
+        (click)="onAddOrRemoveFromOutfit(item.id, availableInOutfits[i], i)"
+      >
+        {{ availableInOutfits[i] ? "REMOVE" : "ADD" }}
+      </ion-button>
+      <ion-button *ngIf="availableInOutfits[i] === 2" slot="end" fill="outline">
+        <ion-spinner></ion-spinner>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+</ion-content>
