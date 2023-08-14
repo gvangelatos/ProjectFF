@@ -236,7 +236,10 @@
           <ion-item-sliding *ngFor="let outfit of outfits" #slidingOutfitItem>
             <ion-item>
               <ion-thumbnail slot="start">
-                <img [src]="outfit.items[0].imageUrl" />
+                <img
+                  *ngIf="outfit.items.length"
+                  [src]="outfit.items[0].imageUrl"
+                />
               </ion-thumbnail>
               <ion-badge slot="end">{{outfit.items.length}} Item(s)</ion-badge>
               <ion-label>
@@ -299,7 +302,10 @@
           >
             <ion-item>
               <ion-thumbnail slot="start">
-                <img [src]="outfit.items[0].imageUrl" />
+                <img
+                  *ngIf="outfit.items.length"
+                  [src]="outfit.items[0].imageUrl"
+                />
               </ion-thumbnail>
               <ion-badge slot="end">{{outfit.items.length}} Item(s)</ion-badge>
               <ion-label>
@@ -574,7 +580,10 @@
                 >
                   <ion-item>
                     <ion-thumbnail slot="start">
-                      <img [src]="outfit.items[0].imageUrl" />
+                      <img
+                        *ngIf="outfit.items.length"
+                        [src]="outfit.items[0].imageUrl"
+                      />
                     </ion-thumbnail>
                     <ion-badge slot="end"
                       >{{outfit.items.length}} Item(s)</ion-badge

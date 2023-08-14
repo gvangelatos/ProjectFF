@@ -9,7 +9,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ToastController } from '@ionic/angular';
 import { Outfit } from 'src/app/models/outfit/outfit.model';
 import { OutfitsService } from 'src/app/services/outfits/outfits.service';
 
@@ -32,7 +32,10 @@ export class TypeaheadComponent implements OnInit, OnChanges {
   filteredItems: Outfit[] | any[] = [];
   workingSelectedValues: string[] = [];
 
-  constructor(private outfitsService: OutfitsService) {}
+  constructor(
+    private outfitsService: OutfitsService,
+    public toastCtrl: ToastController
+  ) {}
 
   ngOnInit() {
     this.filteredItems = [...this.items];
@@ -71,8 +74,36 @@ export class TypeaheadComponent implements OnInit, OnChanges {
         .addClothingItemToOutfit(outfitid, <string>this.selectedItemId)
         .subscribe((res) => {
           this.availableInOutfits[index] = 1;
+          this.toastCtrl
+            .create({
+              message: 'Added Successfully!',
+              duration: 1500,
+              position: 'bottom',
+              icon: 'checkmark-circle-outline',
+              color: 'success',
+            })
+            .then((toastEl) => {
+              toastEl.present();
+            });
         });
     } else {
+      this.availableInOutfits[index] = 2;
+      this.outfitsService
+        .removeClothingItemFromOutfit(outfitid, <string>this.selectedItemId)
+        .subscribe((res) => {
+          this.availableInOutfits[index] = 0;
+          this.toastCtrl
+            .create({
+              message: 'Removed Successfully!',
+              duration: 1500,
+              position: 'bottom',
+              icon: 'checkmark-circle-outline',
+              color: 'success',
+            })
+            .then((toastEl) => {
+              toastEl.present();
+            });
+        });
     }
   }
 

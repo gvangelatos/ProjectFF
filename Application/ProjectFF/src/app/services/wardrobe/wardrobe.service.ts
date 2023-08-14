@@ -32,7 +32,7 @@ export class WardrobeService {
       type: 'Footwear',
       subType: 'Sneakers',
       imageUrl:
-        'https://media.capeunionmart.co.za/i/poetrystores/102810130_C85_1?$large_PROD$',
+        'https://d2ob0iztsaxy5v.cloudfront.net/product/340065/3400651760m7_zm.jpg',
       id: '9857553',
       color: 'white',
     },

@@ -20,7 +20,7 @@
     >
       <!-- <ion-badge slot="end">{{ item.items.length }} Item(s)</ion-badge> -->
       <ion-thumbnail slot="start">
-        <img [src]="item.items[0].imageUrl" />
+        <img *ngIf="item.items.length" [src]="item?.items[0]?.imageUrl" />
       </ion-thumbnail>
       <ion-label>
         <h5>{{ item.name }}</h5>

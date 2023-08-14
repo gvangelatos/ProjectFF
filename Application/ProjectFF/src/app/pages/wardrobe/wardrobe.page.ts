@@ -454,7 +454,7 @@ export class WardrobePage implements OnInit, OnDestroy {
     if (this.filter === 'wardrobe') {
       this.navCtrl.navigateForward('/wardrobe/clothing-items/new');
     } else {
-      this.navCtrl.navigateForward('/wardrobe/outfit/new');
+      this.navCtrl.navigateForward('/wardrobe/outfits/new');
     }
   }
 
