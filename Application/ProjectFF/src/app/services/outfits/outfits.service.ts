@@ -297,6 +297,17 @@ export class OutfitsService {
     );
   }
 
+  addOutfit(newOutfit: Outfit) {
+    return this.outfits.pipe(
+      take(1),
+      delay(300),
+      tap((outfits) => {
+        const updatedOutfits = [...outfits, newOutfit];
+        this._outfits.next(updatedOutfits);
+      })
+    );
+  }
+
   toggleOutfitFavorite(itemId: string, activeFilter?: string) {
     return this.outfits.pipe(
       take(1),
