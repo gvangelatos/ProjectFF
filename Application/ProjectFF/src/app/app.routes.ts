@@ -47,7 +47,9 @@ export const routes: Routes = [
   {
     path: 'wardrobe/outfits/edit/:outfitId',
     loadComponent: () =>
-      import('./pages/wardrobe/wardrobe.page').then((m) => m.WardrobePage),
+      import('./pages/edit-outfit/edit-outfit.page').then(
+        (m) => m.EditOutfitPage
+      ),
     // canActivate: [AuthGuard],
   },
   {
@@ -64,5 +66,6 @@ export const routes: Routes = [
       import('./pages/edit-outfit/edit-outfit.page').then(
         (m) => m.EditOutfitPage
       ),
+    // canActivate: [AuthGuard],
   },
 ];

@@ -265,7 +265,7 @@ export class OutfitsService {
   getOutfitById(id: string) {
     return this.outfits.pipe(
       take(1),
-      delay(500),
+      delay(300),
       map((outfits) => {
         return <Outfit[]>[...outfits.filter((item) => item.id === id)];
       })
@@ -337,6 +337,24 @@ export class OutfitsService {
         if (activeFilter) {
           this.getFilteredOutfits(activeFilter);
         }
+      })
+    );
+  }
+
+  editOutfit(outfit: Outfit) {
+    return this.outfits.pipe(
+      take(1),
+      delay(100),
+      tap((outfits) => {
+        const allButTheSelectedOutfit = <Outfit[]>[
+          ...outfits.filter((item) => item.id !== outfit.id),
+        ];
+        console.log(allButTheSelectedOutfit);
+        if (allButTheSelectedOutfit.length === outfits.length) {
+          return;
+        }
+        const updatedOutfits = [outfit, ...allButTheSelectedOutfit];
+        this._outfits.next(updatedOutfits);
       })
     );
   }

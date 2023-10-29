@@ -217,14 +217,7 @@ export class WardrobePage implements OnInit, OnDestroy {
 
   onEditOutfit(outfitId: string, slidingEl: IonItemSliding) {
     slidingEl.close();
-    this.loadingCtrl
-      .create({ message: 'Editing Outfit...' })
-      .then((loadingEl) => {
-        loadingEl.present();
-        setTimeout(() => {
-          loadingEl.dismiss();
-        }, 800);
-      });
+    this.navCtrl.navigateForward(['/wardrobe/outfits/edit/', outfitId]);
   }
 
   onAddToOutfit(clothingItemId: string, slidingEl: IonItemSliding) {
